@@ -1,3 +1,5 @@
+package gui;
+
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -44,7 +46,7 @@ public class Main {
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
 
-        // Main Rendering Loop
+        // gui.Main Rendering Loop
         while(!glfwWindowShouldClose(window))
         {
             double time = glfwGetTime();
