@@ -144,28 +144,28 @@ public class Chip8Cpu {
                 switch(opcode & 0x000F)
                 {
                     case 0: //Opcode 0x8XY0, sets VX to VY
-                        V[opcode & 0x0F00] = V[opcode & 0x00F0];
+                        V[(opcode & 0x0F00) >> 8] = V[opcode & 0x00F0 >> 4];
                         break;
 
                     case 1: //Opcode 0x8XY1, sets VX to VX | VY
-                        V[opcode & 0x0F00] |= V[opcode & 0x00F0];
+                        V[(opcode & 0x0F00) >> 8] |= V[(opcode & 0x00F0) >> 4];
                         break;
 
                     case 2: //Opcode 0x8XY2, sets VX to VX & VY
-                        V[opcode & 0x0F00] &= V[opcode & 0x00F0];
+                        V[(opcode & 0x0F00) >> 8] &= V[(opcode & 0x00F0) >> 4];
                         break;
 
                     case 3: //Opcode 0x8XY3, sets VX to VX ^ VY
-                        V[opcode & 0x0F00] ^= V[opcode & 0x00F0];
+                        V[(opcode & 0x0F00) >> 8] ^= V[(opcode & 0x00F0) >> 4];
                         break;
 
                     case 4: //Opcode 0x8XY4, sets VX to VX + VY
-                        V[opcode & 0x0F00] += V[opcode & 0x00F0];
+                        V[(opcode & 0x0F00) >> 8] += V[(opcode & 0x00F0) >> 4];
 
                         //Carry Bit Implementation
-                        if(V[opcode & 0x0F00] > 255)
+                        if(V[(opcode & 0x0F00) >> 8] > 255)
                         {
-                            V[opcode & 0x0F00] -= 255;
+                            V[(opcode & 0x0F00) >> 8] -= 255;
                             V[0xF] = 1;
                         } else
                         {
@@ -174,20 +174,20 @@ public class Chip8Cpu {
 
                         break;
 
-                    case 5: //Opcode 0x8XY1, sets VX to VX - VY
-                        V[opcode & 0x0F00] -= V[opcode & 0x00F0];
+                    case 5: //Opcode 0x8XY5, sets VX to VX - VY
+                        V[(opcode & 0x0F00) >> 8] -= V[(opcode & 0x00F0) >> 4];
                         break;
 
-                    case 6: //Opcode 0x8XY1, sets VX to VX | VY
-                        V[opcode & 0x0F00] = (V[opcode & 0x00F0] >> 1);
+                    case 6: //Opcode 0x8XY6, sets VX to VY >> 1
+                        V[(opcode & 0x0F00) >> 8] = (V[(opcode & 0x00F0) >> 4] >> 1);
                         break;
 
-                    case 7: //Opcode 0x8XY1, sets VX to VX | VY
-                        V[opcode & 0x0F00] = (V[opcode & 0x00F0] - V[opcode & 0x0F00]);
+                    case 7: //Opcode 0x8XY1, sets VX to VY - VX
+                        V[(opcode & 0x0F00) >> 8] = (V[(opcode & 0x00F0) >> 4] - V[(opcode & 0x0F00) >> 8]);
                         break;
 
-                    case 0xE: //Opcode 0x8XY1, sets VX to VX | VY
-                        V[opcode & 0x0F00] = (V[opcode & 0x00F0] <<= 1);
+                    case 0xE: //Opcode 0x8XY1, shifts VY left by 1 and sets VX equal to it
+                        V[(opcode & 0x0F00) >> 8] = (V[(opcode & 0x00F0) >> 4] <<= 1);
                         break;
 
                 }
@@ -195,7 +195,7 @@ public class Chip8Cpu {
                 break;
             }
             case 9: //Opcode 0x9XY0, skips next instr if VX != VY
-                if(V[opcode & 0x0F00] != V[opcode & 0x00F0])
+                if(V[(opcode & 0x0F00) >> 8] != V[(opcode & 0x00F0) >> 4])
                 {
                     pc += 2;
                 }

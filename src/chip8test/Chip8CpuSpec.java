@@ -321,6 +321,61 @@ public class Chip8CpuSpec {
         assertEquals(0x51, cpu.getV(0));
         assertEquals(0x202, cpu.getPC());
     }
+
+    //Tests instruction 0x7XNN, which adds NN to register VX
+    @Test
+    public void addToRegTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Writes 0x7002, which adds 02 to V0
+        cpu.writeToMem(0x202, 0x70);
+        cpu.writeToMem(0x203, 0x02);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x53, cpu.getV(0));
+        assertEquals(0x204, cpu.getPC());
+    }
+
+    //Tests instruction 0x8XY0, which sets VX to VY
+    @Test
+    public void setRegToRegTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8020, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x10);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52, cpu.getV(0));
+    }
+
     //Tests instruction 0xANNN, setting I to address NNN
     @Test
     public void setITest()
