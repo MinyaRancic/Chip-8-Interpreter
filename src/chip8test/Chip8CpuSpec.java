@@ -359,7 +359,7 @@ public class Chip8CpuSpec {
         cpu.writeToMem(0x202, 0x61);
         cpu.writeToMem(0x203, 0x52);
 
-        //Writes 0x8020, which sets VX to VY
+        //Writes 0x8010, which sets VX to VY
         cpu.writeToMem(0x204, 0x80);
         cpu.writeToMem(0x205, 0x10);
 
@@ -374,6 +374,298 @@ public class Chip8CpuSpec {
         cpu.emulateCycle();
         assertEquals(0x206, cpu.getPC());
         assertEquals(0x52, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY1, Sets VX to VX | VY
+    @Test
+    public void regOrTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x11);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52 | 0x51, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY2, Sets VX to VX & VY
+    @Test
+    public void regAndTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x12);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52 & 0x51, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY3, Sets VX to VX ^ VY
+    @Test
+    public void regXorTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x13);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52 ^ 0x51, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY4, Sets VX to VX + VY
+    @Test
+    public void regAddTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x14);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52 + 0x51, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY4, Sets VX to VX + VY
+    @Test
+    public void regAddCarryTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0xFF);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x01);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x14);
+
+        cpu.emulateCycle();
+        assertEquals(0xFF, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x1, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x1, cpu.getV(0));
+        assertEquals(0x1, cpu.getV(0xF));
+        assertEquals(0x1, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY5, Sets VX to VX - VY
+    @Test
+    public void regSubtractTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x52);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x51);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x15);
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52 - 0x51, cpu.getV(0));
+        assertEquals(0x51, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY4, Sets VX to VX + VY
+    @Test
+    public void regRightShiftTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x16);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x52 >> 1, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+    }
+
+    //Tests instruction 0x8XY7, Sets VX to VY - VX
+    @Test
+    public void regRevSubBorrowTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x52);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x17);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x51 - 0x52, cpu.getV(0));
+        assertEquals(0x52, cpu.getV(1));
+        assertEquals(0, cpu.getV(0xF));
+    }
+
+    //Tests instruction 0x8XYE, Sets VX to VX + VY
+    @Test
+    public void regLeftShiftTest()
+    {
+        Chip8Cpu cpu = new Chip8Cpu();
+
+        //Writes 0x6051, which sets V0 to 51
+        cpu.writeToMem(0x200, 0x60);
+        cpu.writeToMem(0x201, 0x51);
+
+        //Set V1 to 51
+        cpu.writeToMem(0x202, 0x61);
+        cpu.writeToMem(0x203, 0x82);
+
+        //Writes 0x8010, which sets VX to VY
+        cpu.writeToMem(0x204, 0x80);
+        cpu.writeToMem(0x205, 0x1E);
+
+        cpu.emulateCycle();
+        assertEquals(0x51, cpu.getV(0));
+        assertEquals(0x202, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x82, cpu.getV(1));
+        assertEquals(0x204, cpu.getPC());
+
+        cpu.emulateCycle();
+        assertEquals(0x206, cpu.getPC());
+        assertEquals(0x82 << 1, cpu.getV(0));
+        assertEquals(0x82 << 1, cpu.getV(1));
+        assertEquals(0x82 >> 7, cpu.getV(0xF));
     }
 
     //Tests instruction 0xANNN, setting I to address NNN

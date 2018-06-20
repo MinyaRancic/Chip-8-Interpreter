@@ -144,7 +144,7 @@ public class Chip8Cpu {
                 switch(opcode & 0x000F)
                 {
                     case 0: //Opcode 0x8XY0, sets VX to VY
-                        V[(opcode & 0x0F00) >> 8] = V[opcode & 0x00F0 >> 4];
+                        V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4];
                         break;
 
                     case 1: //Opcode 0x8XY1, sets VX to VX | VY
@@ -173,7 +173,7 @@ public class Chip8Cpu {
                         }
 
                         break;
-
+//TODO Fix Register Meta Info
                     case 5: //Opcode 0x8XY5, sets VX to VX - VY
                         V[(opcode & 0x0F00) >> 8] -= V[(opcode & 0x00F0) >> 4];
                         break;
